@@ -90,10 +90,15 @@ namespace DogGo.Repositories
 
                         reader.Close();
                         return owner;
+                    } 
+                    else
+                    {
+
+                        reader.Close();
+                        return null;
+
                     }
 
-                    reader.Close();
-                    return null;
                 }
             }
         }
