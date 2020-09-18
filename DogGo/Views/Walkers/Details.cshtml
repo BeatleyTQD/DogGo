@@ -51,9 +51,15 @@
         </section>
 
         <section class="col-lg-4 col-md-8 container mt-5">
+            @{ int totalWalk = 0;}
             <h1>Total Walk Time</h1>
 
-            <ul class="list-group mt-4">
+            <ul class="list-group mt-4 font-weight-bold">
+                 @foreach (Walk walk in Model.Walks)
+                 {
+                   totalWalk += @walk.Duration/60 ;
+                 }
+                <p>@TimeSpan.FromMinutes(totalWalk).Hours Hr @TimeSpan.FromMinutes(totalWalk).Minutes Min</p>
             </ul>
         </section>
     </div>
