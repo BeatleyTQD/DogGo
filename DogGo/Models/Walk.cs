@@ -15,5 +15,20 @@ namespace DogGo.Models
 
         public Dog Dog { get; set; }
         public Owner Owner { get; set; }
+
+        /*HOW I WOULD DO IT IF I WERE SMART
+        public int getDurationMin()
+        {
+            int min = 0;
+            if (Duration != 0)
+            {
+                min = Duration / 60;
+            }
+            return min;
+
+        }
+
+        public int DurationMin { get { return getDurationMin(); } }
+        */
     }
 }

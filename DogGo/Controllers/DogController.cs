@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DogGo.Models;
+using DogGo.Models.ViewModels;
 using DogGo.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace DogGo.Controllers
     public class DogsController : Controller
     {
         private readonly IDogRepository _dogRepo;
+        private readonly IOwnerRepository _ownerRepo;
 
-        public DogsController(IDogRepository dogRepository)
+        public DogsController(IDogRepository dogRepository, IOwnerRepository ownerRepository)
         {
             _dogRepo = dogRepository;
+            _ownerRepo = ownerRepository;
         }
         // GET: DogController
         public ActionResult Index()
@@ -33,7 +36,16 @@ namespace DogGo.Controllers
         // GET: DogController/Create
         public ActionResult Create()
         {
-            return View();
+            List<Owner> owners = _ownerRepo.GetAllOwners();
+
+            DogFormViewModel vm = new DogFormViewModel()
+            {
+                Dog = new Dog(),
+                Owners = owners
+            };
+
+            return View(vm);
+           
         }
 
         // POST: DogController/Create
