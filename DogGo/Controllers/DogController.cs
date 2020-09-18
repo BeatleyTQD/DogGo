@@ -68,13 +68,19 @@ namespace DogGo.Controllers
         public ActionResult Edit(int id)
         {
             Dog dog = _dogRepo.GetDogById(id);
-            
-            if (dog == null)
+            List<Owner> owners = _ownerRepo.GetAllOwners();
+
+            DogFormViewModel vm = new DogFormViewModel()
+            {
+                Dog = dog,
+                Owners = owners
+            };
+            if (vm == null)
             {
                 return NotFound();
             }
 
-            return View(dog);
+            return View(vm);
         }
 
         // POST: DogController/Edit/5
