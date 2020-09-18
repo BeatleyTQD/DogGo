@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DogGo.Repositories
 {
-    public class WalkRepository
+    public class WalkRepository : IWalkRepository
     {
         private readonly IConfiguration _config;
 
@@ -29,10 +29,13 @@ namespace DogGo.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT Id, [Date], Duration, WalkerId, DogId 
-                                          FROM Walks
-                                         WHERE WalkerId = @Walkerid";
-                    cmd.Parameters.AddWithValue("@Walkerid", walkerId);
+                    cmd.CommandText = @"SELECT w.Id, w.[Date], w.Duration, w.WalkerId, o.id AS OwnerId, o.[Name] AS OwnerName, d.Id AS DogId, d.[Name] AS DogName
+                                          FROM Walks w
+                                          LEFT JOIN Dog d ON w.DogId = d.Id
+                                          LEFT JOIN Owner o ON d.OwnerId = o.Id
+                                         WHERE w.WalkerId = @id
+                                         ORDER BY OwnerName";
+                    cmd.Parameters.AddWithValue("@id", walkerId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -47,6 +50,15 @@ namespace DogGo.Repositories
                             Duration = reader.GetInt32(reader.GetOrdinal("Duration")),
                             WalkerId = reader.GetInt32(reader.GetOrdinal("WalkerId")),
                             DogId = reader.GetInt32(reader.GetOrdinal("DogId")),
+                            Dog = new Dog
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("DogName")),
+                            },
+                            Owner = new Owner
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("OwnerName"))
+                            }
+                          
                         };
 
                         walks.Add(walk);
